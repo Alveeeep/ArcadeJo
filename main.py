@@ -140,22 +140,26 @@ class Background(pygame.sprite.Sprite):
     # self.rect.bottom = height
 
 
-camera = Camera()
-# основной персонаж
 background = Background()
-# 1- dio
-# 2 - jotaro
+
 dio_walking = AnimatedSprite(load_image("dio_walking.png", -1), 16, 1, 100, 300, 1)
 dio_walking.remove(player_group)
 
+dio_walking_r = AnimatedSprite(load_image("dio_walking_r.png", -1), 16, 1, 100, 300, 1)
+dio_walking_r.remove(player_group)
+
 jotaro_walking = AnimatedSprite(load_image("jotaro_walking2.png", -1), 16, 1, 800, 300, 2)
 jotaro_walking.remove(player_group)
+
+jotaro_walking_r = AnimatedSprite(load_image("jotaro_walking2_r.png", -1), 16, 1, 800, 300, 2)
+jotaro_walking_r.remove(player_group)
 
 dio_standing = AnimatedSprite(load_image("dio_standing.png", -1), 16, 1, 100, 300, 1)
 dio_x = dio_standing.rect.x
 
 jotaro_standing = AnimatedSprite(load_image("jotaro_standing.png", -1), 16, 1, 800, 300, 2)
 jotaro_x = jotaro_standing.rect.x
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -169,33 +173,45 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         player_group.add(jotaro_walking)
+        jotaro_walking_r.remove(player_group)
         jotaro_standing.remove(player_group)
+        jotaro_walking.rect.x = jotaro_x
         jotaro_walking.rect.x -= 10
         jotaro_x = jotaro_walking.rect.x
     elif keys[pygame.K_RIGHT]:
-        player_group.add(jotaro_walking)
+        player_group.add(jotaro_walking_r)
+        jotaro_walking.remove(player_group)
         jotaro_standing.remove(player_group)
-        jotaro_walking.rect.x += 10
-        jotaro_x = jotaro_walking.rect.x
+        jotaro_walking_r.rect.x = jotaro_x
+        jotaro_walking_r.rect.x += 10
+        jotaro_x = jotaro_walking_r.rect.x
     else:
         jotaro_walking.remove(player_group)
+        jotaro_walking_r.remove(player_group)
         player_group.add(jotaro_standing)
         jotaro_walking.cur_frame = 0
+        jotaro_walking_r.cur_frame = 0
         jotaro_standing.rect.x = jotaro_x
     if keys[pygame.K_a]:
-        player_group.add(dio_walking)
+        player_group.add(dio_walking_r)
+        dio_walking.remove(player_group)
         dio_standing.remove(player_group)
-        dio_walking.rect.x -= 10
-        dio_x = dio_walking.rect.x
+        dio_walking_r.rect.x = dio_x
+        dio_walking_r.rect.x -= 10
+        dio_x = dio_walking_r.rect.x
     elif keys[pygame.K_d]:
         player_group.add(dio_walking)
+        dio_walking_r.remove(player_group)
         dio_standing.remove(player_group)
+        dio_walking.rect.x = dio_x
         dio_walking.rect.x += 10
         dio_x = dio_walking.rect.x
     else:
         dio_walking.remove(player_group)
+        dio_walking_r.remove(player_group)
         player_group.add(dio_standing)
         dio_walking.cur_frame = 0
+        dio_walking_r.cur_frame = 0
         dio_standing.rect.x = dio_x
     clock.tick(FPS)
 pygame.quit()
