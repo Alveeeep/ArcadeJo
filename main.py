@@ -265,6 +265,8 @@ while running:
         dio_hp = 340
         jotaro_hp = 340
         old_hp = 340
+        jotaro_rounds = 0
+        dio_rounds = 0
         jotaro_cur_sprite = jotaro_standing
         dio_cur_sprite = dio_standing
         start_ticks = pygame.time.get_ticks()
@@ -659,10 +661,55 @@ while running:
         dio_mediumhert_r.cur_frame = 0
         dio_heavyhert.cur_frame = 0
         dio_heavyhert_r.cur_frame = 0
-    if jotaro_hp <= 0 or dio_hp <= 0:
-        pygame.mixer.music.stop()
-        size = width, height = 883, 495
-        screen = pygame.display.set_mode(size)
-        game_over = True
+    if jotaro_hp <= 0:
+        if dio_rounds == 1:
+            print('exit')
+            pygame.mixer.music.stop()
+            size = width, height = 883, 495
+            screen = pygame.display.set_mode(size)
+            game_over = True
+        else:
+            jotaro_look = 2
+            dio_look = 1
+            dio_hit = False
+            jotaro_hit = False
+            dio_hp = 340
+            jotaro_hp = 340
+            old_hp = 340
+            jotaro_x = 500
+            dio_x = 100
+            jotaro_standing.rect.x = jotaro_x
+            dio_standing.rect.x = dio_x
+            jotaro_cur_sprite = jotaro_standing
+            dio_cur_sprite = dio_standing
+            start_ticks = pygame.time.get_ticks()
+            counter, text = 90, '90'.rjust(3)
+            font = pygame.font.SysFont('Consolas', 35)
+            dio_rounds = 1
+    elif dio_hp <= 0:
+        if jotaro_rounds == 1:
+            print('exit')
+            pygame.mixer.music.stop()
+            size = width, height = 883, 495
+            screen = pygame.display.set_mode(size)
+            game_over = True
+        else:
+            jotaro_look = 2
+            dio_look = 1
+            dio_hit = False
+            jotaro_hit = False
+            dio_hp = 340
+            jotaro_hp = 340
+            old_hp = 340
+            jotaro_x = 500
+            dio_x = 100
+            jotaro_standing.rect.x = jotaro_x
+            dio_standing.rect.x = dio_x
+            jotaro_cur_sprite = jotaro_standing
+            dio_cur_sprite = dio_standing
+            start_ticks = pygame.time.get_ticks()
+            counter, text = 90, '90'.rjust(3)
+            font = pygame.font.SysFont('Consolas', 35)
+            jotaro_rounds = 1
     clock.tick(FPS)
 pygame.quit()
