@@ -3,12 +3,13 @@ import os
 import random
 import sys
 
+os.environ['SDL_VIDEO_CENTERED'] = '0'
 pygame.init()
-size = width, height = 921, 720
+size = width, height = 883, 495
 screen = pygame.display.set_mode(size)
 all_sprites = pygame.sprite.Group()
 clock = pygame.time.Clock()
-pygame.display.set_caption("jojo")
+pygame.display.set_caption("JoJo - Arcade")
 
 
 def load_image(name, colorkey=None):
@@ -108,131 +109,46 @@ player_group = pygame.sprite.Group()
 jotaro_group = pygame.sprite.Group()
 dio_group = pygame.sprite.Group()
 
-bckrng_music = pygame.mixer.Sound('data\ThemeofDIO.wav')
+pygame.mixer.music.load('data\ThemeofDIO.wav')
 dio_hit_m = pygame.mixer.Sound('data\dio_hit.wav')
+dio_hit_m.set_volume(0.5)
 joseph_hit_m = pygame.mixer.Sound('data\joseph_hit.wav')
+joseph_hit_m.set_volume(0.5)
+
 
 class Background(pygame.sprite.Sprite):
-    image = load_image("background.png")
-
-    def __init__(self):
+    def __init__(self, image):
         super().__init__(walls_group, all_sprites)
-        self.image = Background.image
+        self.image = image
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
 
 
-background = Background()
+go_screen = Background(load_image("gameover.png"))
 
-dio_walking = AnimatedSprite(load_image("dio_walking.png", -1), 16, 1, 100, 370, dio_group)
 
-dio_walking_r = AnimatedSprite(load_image("dio_walking_r.png", -1), 16, 1, 100, 370, dio_group)
+def show_go_screen():
+    go_screen.add(walls_group)
+    walls_group.remove(background)
+    waiting = True
+    pygame.display.flip()
+    while waiting:
+        clock.tick(FPS)
+        walls_group.draw(screen)
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+                walls_group.remove(go_screen)
+                background.add(walls_group)
+                waiting = False
 
-dio_standing = AnimatedSprite(load_image("dio_standing.png", -1), 16, 1, 100, 370, dio_group)
-dio_x = dio_standing.rect.x
 
-dio_standing_r = AnimatedSprite(load_image("dio_standing_r.png", -1), 16, 1, 100, 370, dio_group)
-dio_x = dio_standing_r.rect.x
-
-dio_weakattack = AnimatedSprite(load_image("dio_weakattack.png", -1), 4, 1, 100, 370, dio_group)
-dio_weakattack.rect.y -= 3
-
-dio_weakattack_r = AnimatedSprite(load_image("dio_weakattack_r.png", -1), 4, 1, 100, 370, dio_group)
-dio_weakattack_r.rect.y -= 3
-
-dio_mediumattack = AnimatedSprite(load_image("dio_medattack.png", -1), 9, 1, 100, 370, dio_group)
-dio_mediumattack.rect.y += 4
-
-dio_mediumattack_r = AnimatedSprite(load_image("dio_medattack_r.png", -1), 9, 1, 100, 370, dio_group)
-dio_mediumattack_r.rect.y += 4
-
-dio_heavyattack = AnimatedSprite(load_image("dio_heavyattack.png", -1), 9, 1, 100, 370, dio_group)
-dio_heavyattack.rect.y -= 10
-
-dio_heavyattack_r = AnimatedSprite(load_image("dio_heavyattack_r.png", -1), 9, 1, 100, 370, dio_group)
-dio_heavyattack_r.rect.y -= 10
-
-dio_weakhert = AnimatedSprite(load_image("dio_weakhert.png", -1), 3, 1, 100, 370, dio_group)
-
-dio_weakhert_r = AnimatedSprite(load_image("dio_weakhert_r.png", -1), 3, 1, 100, 370, dio_group)
-
-dio_mediumhert = AnimatedSprite(load_image("dio_medhit.png", -1), 4, 1, 100, 370, dio_group)
-dio_mediumhert.rect.y -= 4
-
-dio_mediumhert_r = AnimatedSprite(load_image("dio_medhit_r.png", -1), 4, 1, 100, 370, dio_group)
-dio_mediumhert_r.rect.y -= 4
-
-dio_heavyhert = AnimatedSprite(load_image("dio_heavyhit.png", -1), 16, 1, 100, 370, dio_group)
-
-dio_heavyhert_r = AnimatedSprite(load_image("dio_heavyhit_r.png", -1), 16, 1, 100, 370, dio_group)
-
-jotaro_walking = AnimatedSprite(load_image("joseph_walking.png", -1), 10, 1, 800, 370, jotaro_group)
-jotaro_walking.rect.y -= 5
-
-jotaro_walking_r = AnimatedSprite(load_image("joseph_walking_r.png", -1), 10, 1, 800, 370, jotaro_group)
-jotaro_walking_r.rect.y -= 5
-
-jotaro_standing = AnimatedSprite(load_image("joseph_standing2.png", -1), 16, 1, 700, 370, jotaro_group)
-jotaro_standing.rect.y -= 4
-jotaro_x = jotaro_standing.rect.x
-
-jotaro_standing_r = AnimatedSprite(load_image("joseph_standing2_r.png", -1), 16, 1, 550, 370, jotaro_group)
-jotaro_standing_r.rect.y -= 4
-jotaro_x = jotaro_standing_r.rect.x
-
-jotaro_weakattack = AnimatedSprite(load_image("joseph_weakattack.png", -1), 4, 1, 500, 370, jotaro_group)
-jotaro_weakattack.rect.y -= 10
-
-jotaro_weakattack_r = AnimatedSprite(load_image("joseph_weakattack_r.png", -1), 4, 1, 500, 370, jotaro_group)
-jotaro_weakattack_r.rect.y -= 10
-
-jotaro_mediumattack = AnimatedSprite(load_image("joseph_medattack.png", -1), 9, 1, 500, 370, jotaro_group)
-jotaro_mediumattack.rect.y -= 14
-
-jotaro_mediumattack_r = AnimatedSprite(load_image("joseph_medattack_r.png", -1), 9, 1, 500, 370, jotaro_group)
-jotaro_mediumattack_r.rect.y -= 14
-
-jotaro_heavyattack = AnimatedSprite(load_image("joseph_heavyattack.png", -1), 9, 1, 500, 370, jotaro_group)
-jotaro_heavyattack.rect.y -= 47
-
-jotaro_heavyattack_r = AnimatedSprite(load_image("joseph_heavyattack_r.png", -1), 9, 1, 500, 370, jotaro_group)
-jotaro_heavyattack_r.rect.y -= 47
-
-jotaro_weakhert = AnimatedSprite(load_image("joseph_weakhit.png", -1), 3, 1, 500, 370, jotaro_group)
-jotaro_weakhert.rect.y -= 8
-
-jotaro_weakhert_r = AnimatedSprite(load_image("joseph_weakhit_r.png", -1), 3, 1, 700, 370, jotaro_group)
-jotaro_weakhert_r.rect.y -= 8
-
-jotaro_mediumhert = AnimatedSprite(load_image("joseph_medhit.png", -1), 4, 1, 500, 370, jotaro_group)
-jotaro_mediumhert.rect.y -= 14
-
-jotaro_mediumhert_r = AnimatedSprite(load_image("joseph_medhit_r.png", -1), 4, 1, 500, 370, jotaro_group)
-jotaro_mediumhert_r.rect.y -= 14
-
-jotaro_heavyhert = AnimatedSprite(load_image("joseph_heavyhit.png", -1), 16, 1, 500, 370, jotaro_group)
-
-for el in jotaro_group:
-    el.remove(jotaro_group)
-for el in dio_group:
-    el.remove(dio_group)
+background = Background(load_image("background.png"))
 
 # направление персонажей 1 - направо 2 - налево
-jotaro_look = 2
-dio_look = 1
-dio_hit = False
-jotaro_hit = False
-dio_hp = 340
-jotaro_hp = 340
-old_hp = 340
-hitting = [0, 0, 0, 0, 0, 0]
 FPS = 16
-
-jotaro_cur_sprite = jotaro_standing
-dio_cur_sprite = dio_standing
-start_ticks=pygame.time.get_ticks()
-counter, text = 90, '90'.rjust(3)
-font = pygame.font.SysFont('Consolas', 35)
 
 
 def drawing(hp, x):
@@ -242,7 +158,121 @@ def drawing(hp, x):
 
 
 running = True
+game_over = True
 while running:
+    if game_over is True:
+        show_go_screen()
+        dio_walking = AnimatedSprite(load_image("dio_walking.png", -1), 16, 1, 100, 370, dio_group)
+
+        dio_walking_r = AnimatedSprite(load_image("dio_walking_r.png", -1), 16, 1, 100, 370, dio_group)
+
+        dio_standing = AnimatedSprite(load_image("dio_standing.png", -1), 16, 1, 100, 370, dio_group)
+        dio_x = dio_standing.rect.x
+
+        dio_standing_r = AnimatedSprite(load_image("dio_standing_r.png", -1), 16, 1, 100, 370, dio_group)
+        dio_x = dio_standing_r.rect.x
+
+        dio_weakattack = AnimatedSprite(load_image("dio_weakattack.png", -1), 4, 1, 100, 370, dio_group)
+        dio_weakattack.rect.y -= 3
+
+        dio_weakattack_r = AnimatedSprite(load_image("dio_weakattack_r.png", -1), 4, 1, 100, 370, dio_group)
+        dio_weakattack_r.rect.y -= 3
+
+        dio_mediumattack = AnimatedSprite(load_image("dio_medattack.png", -1), 9, 1, 100, 370, dio_group)
+        dio_mediumattack.rect.y += 4
+
+        dio_mediumattack_r = AnimatedSprite(load_image("dio_medattack_r.png", -1), 9, 1, 100, 370, dio_group)
+        dio_mediumattack_r.rect.y += 4
+
+        dio_heavyattack = AnimatedSprite(load_image("dio_heavyattack.png", -1), 9, 1, 100, 370, dio_group)
+        dio_heavyattack.rect.y -= 10
+
+        dio_heavyattack_r = AnimatedSprite(load_image("dio_heavyattack_r.png", -1), 9, 1, 100, 370, dio_group)
+        dio_heavyattack_r.rect.y -= 10
+
+        dio_weakhert = AnimatedSprite(load_image("dio_weakhert.png", -1), 3, 1, 100, 370, dio_group)
+
+        dio_weakhert_r = AnimatedSprite(load_image("dio_weakhert_r.png", -1), 3, 1, 100, 370, dio_group)
+
+        dio_mediumhert = AnimatedSprite(load_image("dio_medhit.png", -1), 4, 1, 100, 370, dio_group)
+        dio_mediumhert.rect.y -= 4
+
+        dio_mediumhert_r = AnimatedSprite(load_image("dio_medhit_r.png", -1), 4, 1, 100, 370, dio_group)
+        dio_mediumhert_r.rect.y -= 4
+
+        dio_heavyhert = AnimatedSprite(load_image("dio_heavyhit.png", -1), 16, 1, 100, 370, dio_group)
+
+        dio_heavyhert_r = AnimatedSprite(load_image("dio_heavyhit_r.png", -1), 16, 1, 100, 370, dio_group)
+
+        jotaro_walking = AnimatedSprite(load_image("joseph_walking.png", -1), 10, 1, 800, 370, jotaro_group)
+        jotaro_walking.rect.y -= 5
+
+        jotaro_walking_r = AnimatedSprite(load_image("joseph_walking_r.png", -1), 10, 1, 800, 370, jotaro_group)
+        jotaro_walking_r.rect.y -= 5
+
+        jotaro_standing = AnimatedSprite(load_image("joseph_standing2.png", -1), 16, 1, 700, 370, jotaro_group)
+        jotaro_standing.rect.y -= 4
+        jotaro_x = jotaro_standing.rect.x
+
+        jotaro_standing_r = AnimatedSprite(load_image("joseph_standing2_r.png", -1), 16, 1, 550, 370, jotaro_group)
+        jotaro_standing_r.rect.y -= 4
+        jotaro_x = jotaro_standing_r.rect.x
+
+        jotaro_weakattack = AnimatedSprite(load_image("joseph_weakattack.png", -1), 4, 1, 500, 370, jotaro_group)
+        jotaro_weakattack.rect.y -= 10
+
+        jotaro_weakattack_r = AnimatedSprite(load_image("joseph_weakattack_r.png", -1), 4, 1, 500, 370, jotaro_group)
+        jotaro_weakattack_r.rect.y -= 10
+
+        jotaro_mediumattack = AnimatedSprite(load_image("joseph_medattack.png", -1), 9, 1, 500, 370, jotaro_group)
+        jotaro_mediumattack.rect.y -= 14
+
+        jotaro_mediumattack_r = AnimatedSprite(load_image("joseph_medattack_r.png", -1), 9, 1, 500, 370, jotaro_group)
+        jotaro_mediumattack_r.rect.y -= 14
+
+        jotaro_heavyattack = AnimatedSprite(load_image("joseph_heavyattack.png", -1), 9, 1, 500, 370, jotaro_group)
+        jotaro_heavyattack.rect.y -= 47
+
+        jotaro_heavyattack_r = AnimatedSprite(load_image("joseph_heavyattack_r.png", -1), 9, 1, 500, 370, jotaro_group)
+        jotaro_heavyattack_r.rect.y -= 47
+
+        jotaro_weakhert = AnimatedSprite(load_image("joseph_weakhit.png", -1), 3, 1, 500, 370, jotaro_group)
+        jotaro_weakhert.rect.y -= 8
+
+        jotaro_weakhert_r = AnimatedSprite(load_image("joseph_weakhit_r.png", -1), 3, 1, 700, 370, jotaro_group)
+        jotaro_weakhert_r.rect.y -= 8
+
+        jotaro_mediumhert = AnimatedSprite(load_image("joseph_medhit.png", -1), 4, 1, 500, 370, jotaro_group)
+        jotaro_mediumhert.rect.y -= 14
+
+        jotaro_mediumhert_r = AnimatedSprite(load_image("joseph_medhit_r.png", -1), 4, 1, 500, 370, jotaro_group)
+        jotaro_mediumhert_r.rect.y -= 14
+
+        jotaro_heavyhert = AnimatedSprite(load_image("joseph_heavyhit.png", -1), 16, 1, 500, 370, jotaro_group)
+
+        for el in jotaro_group:
+            el.remove(jotaro_group)
+        for el in dio_group:
+            el.remove(dio_group)
+        os.environ['SDL_VIDEO_CENTERED'] = '0'
+        size = width, height = 921, 720
+        screen = pygame.display.set_mode(size)
+        game_over = False
+        jotaro_look = 2
+        dio_look = 1
+        dio_hit = False
+        jotaro_hit = False
+        dio_hp = 340
+        jotaro_hp = 340
+        old_hp = 340
+        jotaro_cur_sprite = jotaro_standing
+        dio_cur_sprite = dio_standing
+        start_ticks = pygame.time.get_ticks()
+        counter, text = 90, '90'.rjust(3)
+        font = pygame.font.SysFont('Consolas', 35)
+        pygame.mixer.music.set_volume(0.05)
+        pygame.mixer.music.play()
+
     seconds = (pygame.time.get_ticks() - start_ticks) / 1000
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -262,7 +292,7 @@ while running:
     pygame.display.flip()
     keys = pygame.key.get_pressed()
     # JOTARO
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] and jotaro_hit is False:
         for el in jotaro_group:
             el.remove(jotaro_group)
         jotaro_group.add(jotaro_walking)
@@ -273,7 +303,7 @@ while running:
         jotaro_look = 2
         jotaro_hit = False
 
-    elif keys[pygame.K_RIGHT]:
+    elif keys[pygame.K_RIGHT] and jotaro_hit is False:
         for el in jotaro_group:
             el.remove(jotaro_group)
         jotaro_group.add(jotaro_walking_r)
@@ -361,7 +391,7 @@ while running:
                 dio_group.add(dio_mediumhert)
                 dio_mediumhert.rect.x = dio_x - 100
                 dio_look = 1
-            dio_hp -= 14
+            dio_hp -= 12
             dio_hit_m.play()
         if dio_mediumhert.cur_frame == 3 or dio_mediumhert_r.cur_frame == 3:
             dio_hit = False
@@ -407,7 +437,7 @@ while running:
                 dio_group.add(dio_heavyhert)
                 dio_heavyhert.rect.x = dio_x - 100
                 dio_look = 1
-            dio_hp -= 14
+            dio_hp -= 18
             dio_hit_m.play()
         if dio_heavyhert.cur_frame == 15 or dio_heavyhert_r.cur_frame == 15:
             dio_hit = False
@@ -444,8 +474,9 @@ while running:
         jotaro_mediumhert.cur_frame = 0
         jotaro_mediumhert_r.cur_frame = 0
         jotaro_heavyhert.cur_frame = 0
+
     # DIO
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] and dio_hit is False:
         for el in dio_group:
             el.remove(dio_group)
         dio_group.add(dio_walking_r)
@@ -455,7 +486,7 @@ while running:
         dio_x = dio_walking_r.rect.x
         dio_look = 2
 
-    elif keys[pygame.K_d]:
+    elif keys[pygame.K_d] and dio_hit is False:
         for el in dio_group:
             el.remove(dio_group)
         dio_group.add(dio_walking)
@@ -501,16 +532,12 @@ while running:
             joseph_hit_m.play()
         if jotaro_weakhert.cur_frame == 2 or jotaro_weakhert_r.cur_frame == 2:
             jotaro_hit = False
-            for el in jotaro_group:
-                el.remove(jotaro_group)
             jotaro_cur_sprite = jotaro_standing
             jotaro_group.add(jotaro_standing)
             jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_weakhert.cur_frame == 2 or jotaro_weakhert_r.cur_frame == 2:
         jotaro_hit = False
-        for el in jotaro_group:
-            el.remove(jotaro_group)
         jotaro_cur_sprite = jotaro_standing
         jotaro_group.add(jotaro_standing)
         jotaro_standing.rect.x = jotaro_x
@@ -547,20 +574,16 @@ while running:
                 jotaro_group.add(jotaro_mediumhert_r)
                 jotaro_mediumhert_r.rect.x = jotaro_x + 20
                 jotaro_look = 1
-            jotaro_hp -= 8
+            jotaro_hp -= 12
             joseph_hit_m.play()
         if jotaro_mediumhert.cur_frame == 3 or jotaro_mediumhert_r.cur_frame == 3:
             jotaro_hit = False
-            for el in jotaro_group:
-                el.remove(jotaro_group)
             jotaro_cur_sprite = jotaro_standing
             jotaro_group.add(jotaro_standing)
             jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_mediumhert.cur_frame == 3 or jotaro_mediumhert_r.cur_frame == 3:
         jotaro_hit = False
-        for el in jotaro_group:
-            el.remove(jotaro_group)
         jotaro_cur_sprite = jotaro_standing
         jotaro_group.add(jotaro_standing)
         jotaro_standing.rect.x = jotaro_x
@@ -597,20 +620,16 @@ while running:
                 jotaro_group.add(jotaro_heavyhert)
                 jotaro_heavyhert.rect.x = jotaro_x + 20
                 jotaro_look = 1
-            jotaro_hp -= 8
+            jotaro_hp -= 18
             joseph_hit_m.play()
         if jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert.cur_frame == 15:
             jotaro_hit = False
-            for el in jotaro_group:
-                el.remove(jotaro_group)
             jotaro_cur_sprite = jotaro_standing
             jotaro_group.add(jotaro_standing)
             jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert.cur_frame == 15:
         jotaro_hit = False
-        for el in jotaro_group:
-            el.remove(jotaro_group)
         jotaro_cur_sprite = jotaro_standing
         jotaro_group.add(jotaro_standing)
         jotaro_standing.rect.x = jotaro_x
@@ -640,5 +659,10 @@ while running:
         dio_mediumhert_r.cur_frame = 0
         dio_heavyhert.cur_frame = 0
         dio_heavyhert_r.cur_frame = 0
+    if jotaro_hp <= 0 or dio_hp <= 0:
+        pygame.mixer.music.stop()
+        size = width, height = 883, 495
+        screen = pygame.display.set_mode(size)
+        game_over = True
     clock.tick(FPS)
 pygame.quit()
