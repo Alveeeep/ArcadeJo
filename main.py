@@ -258,6 +258,7 @@ while running:
         jotaro_mediumhert_r.rect.y -= 14
 
         jotaro_heavyhert = AnimatedSprite(load_image("joseph_heavyhit.png", -1), 16, 1, 500, 370, jotaro_group)
+        jotaro_heavyhert_r = AnimatedSprite(load_image("joseph_heavyhit_r.png", -1), 16, 1, 500, 370, jotaro_group)
 
         for el in jotaro_group:
             el.remove(jotaro_group)
@@ -629,19 +630,19 @@ while running:
                 jotaro_heavyhert.rect.x = jotaro_x + 90
                 jotaro_look = 2
             else:
-                jotaro_cur_sprite = jotaro_heavyhert
-                jotaro_group.add(jotaro_heavyhert)
-                jotaro_heavyhert.rect.x = jotaro_x + 20
+                jotaro_cur_sprite = jotaro_heavyhert_r
+                jotaro_group.add(jotaro_heavyhert_r)
+                jotaro_heavyhert_r.rect.x = jotaro_x - 70
                 jotaro_look = 1
             jotaro_hp -= 18
             joseph_hit_m.play()
-        if jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert.cur_frame == 15:
+        if jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert_r.cur_frame == 15:
             jotaro_hit = False
             jotaro_cur_sprite = jotaro_standing
             jotaro_group.add(jotaro_standing)
             jotaro_standing.rect.x = jotaro_x
 
-    elif jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert.cur_frame == 15:
+    elif jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert_r.cur_frame == 15:
         jotaro_hit = False
         jotaro_cur_sprite = jotaro_standing
         jotaro_group.add(jotaro_standing)
