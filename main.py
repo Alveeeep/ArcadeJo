@@ -151,6 +151,15 @@ background = Background(load_image("background.png"))
 FPS = 16
 
 
+def drawing_rounds(x, round):
+    if round == 1:
+        pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
+    elif round == 2:
+        pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
+        pygame.draw.rect(screen, (239, 23, 8), (x + 31, 124, 20, 18), 0)
+    pygame.display.flip()
+
+
 def drawing(hp, x):
     pygame.draw.rect(screen, (133, 81, 189), (x, 95, hp, 22), 0)
     pygame.draw.rect(screen, (192, 112, 211), (x, 98, hp, 14), 0)
@@ -287,6 +296,8 @@ while running:
     jotaro_group.update()
     drawing(dio_hp, 44)
     drawing(jotaro_hp, 533 + old_hp - jotaro_hp)
+    drawing_rounds(122, dio_rounds)
+    drawing_rounds(732, jotaro_rounds)
     counter = 90 - int(seconds)
     text = str(counter).rjust(3) if counter > 0 else 'boom!'
     screen.blit(font.render(text, True, (0, 0, 255)), (420, 90))
@@ -662,8 +673,8 @@ while running:
         dio_heavyhert.cur_frame = 0
         dio_heavyhert_r.cur_frame = 0
     if jotaro_hp <= 0:
-        if dio_rounds == 1:
-            print('exit')
+        dio_rounds += 1
+        if dio_rounds == 2:
             pygame.mixer.music.stop()
             size = width, height = 883, 495
             screen = pygame.display.set_mode(size)
@@ -685,10 +696,9 @@ while running:
             start_ticks = pygame.time.get_ticks()
             counter, text = 90, '90'.rjust(3)
             font = pygame.font.SysFont('Consolas', 35)
-            dio_rounds = 1
     elif dio_hp <= 0:
-        if jotaro_rounds == 1:
-            print('exit')
+        jotaro_rounds += 1
+        if jotaro_rounds == 2:
             pygame.mixer.music.stop()
             size = width, height = 883, 495
             screen = pygame.display.set_mode(size)
@@ -710,6 +720,5 @@ while running:
             start_ticks = pygame.time.get_ticks()
             counter, text = 90, '90'.rjust(3)
             font = pygame.font.SysFont('Consolas', 35)
-            jotaro_rounds = 1
     clock.tick(FPS)
 pygame.quit()
