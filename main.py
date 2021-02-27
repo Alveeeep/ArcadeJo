@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 import sys
+import time
 
 os.environ['SDL_VIDEO_CENTERED'] = '0'
 pygame.init()
@@ -145,18 +146,37 @@ def show_go_screen():
                 waiting = False
 
 
+dio_win = pygame.sprite.Group()
+jojo_win = pygame.sprite.Group()
 background = Background(load_image("background.png"))
+dio_wins = Background(load_image("dio_wins.png"))
+dio_wins.rect.x = 211
+dio_wins.rect.y = 8
+walls_group.remove(dio_wins)
+dio_wins.add(dio_win)
+jojo_wins = Background(load_image("jojo_wins.png"))
+jojo_wins.rect.x = 110
+jojo_wins.rect.y = 8
+walls_group.remove(jojo_wins)
+jojo_wins.add(jojo_win)
 
 # направление персонажей 1 - направо 2 - налево
 FPS = 16
 
 
-def drawing_rounds(x, round):
+def drawing_rounds(x, round, k):
     if round == 1:
-        pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
+        if k == 1:
+            pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
+        elif k == 2:
+            pygame.draw.rect(screen, (239, 23, 8), (x + 31, 124, 20, 18), 0)
     elif round == 2:
-        pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
-        pygame.draw.rect(screen, (239, 23, 8), (x + 31, 124, 20, 18), 0)
+        if k == 1:
+            pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
+            pygame.draw.rect(screen, (239, 23, 8), (x + 31, 124, 20, 18), 0)
+        elif k == 2:
+            pygame.draw.rect(screen, (239, 23, 8), (x + 31, 124, 20, 18), 0)
+            pygame.draw.rect(screen, (239, 23, 8), (x, 124, 20, 18), 0)
     pygame.display.flip()
 
 
@@ -297,8 +317,8 @@ while running:
     jotaro_group.update()
     drawing(dio_hp, 44)
     drawing(jotaro_hp, 533 + old_hp - jotaro_hp)
-    drawing_rounds(122, dio_rounds)
-    drawing_rounds(732, jotaro_rounds)
+    drawing_rounds(122, dio_rounds, 1)
+    drawing_rounds(732, jotaro_rounds, 2)
     counter = 90 - int(seconds)
     text = str(counter).rjust(3) if counter > 0 else 'boom!'
     screen.blit(font.render(text, True, (0, 0, 255)), (420, 90))
@@ -676,11 +696,17 @@ while running:
     if jotaro_hp <= 0:
         dio_rounds += 1
         if dio_rounds == 2:
+            dio_win.draw(screen)
+            pygame.display.flip()
+            time.sleep(3)
             pygame.mixer.music.stop()
             size = width, height = 883, 495
             screen = pygame.display.set_mode(size)
             game_over = True
         else:
+            dio_win.draw(screen)
+            pygame.display.flip()
+            time.sleep(2)
             jotaro_look = 2
             dio_look = 1
             dio_hit = False
@@ -705,6 +731,9 @@ while running:
             screen = pygame.display.set_mode(size)
             game_over = True
         else:
+            jojo_win.draw(screen)
+            pygame.display.flip()
+            time.sleep(2)
             jotaro_look = 2
             dio_look = 1
             dio_hit = False
