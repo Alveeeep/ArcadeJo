@@ -471,15 +471,15 @@ while running:
             dio_hp -= 8
             dio_hit_m.play()
         if dio_weakhert.cur_frame == 2 or dio_weakhert_r.cur_frame == 2:
-            dio_hit = False
             dio_cur_sprite = dio_standing
             dio_group.add(dio_standing)
             dio_standing.rect.x = dio_x
+            dio_hit = False
     elif dio_weakhert.cur_frame == 2 or dio_weakhert_r.cur_frame == 2:
-        dio_hit = False
         dio_cur_sprite = dio_standing
         dio_group.add(dio_standing)
         dio_standing.rect.x = dio_x
+        dio_hit = False
 
     elif keys[pygame.K_KP_2]:
         for el in jotaro_group:
@@ -666,15 +666,9 @@ while running:
             joseph_hit_m.play()
         if jotaro_weakhert.cur_frame == 2 or jotaro_weakhert_r.cur_frame == 2:
             jotaro_hit = False
-            jotaro_cur_sprite = jotaro_standing
-            jotaro_group.add(jotaro_standing)
-            jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_weakhert.cur_frame == 2 or jotaro_weakhert_r.cur_frame == 2:
         jotaro_hit = False
-        jotaro_cur_sprite = jotaro_standing
-        jotaro_group.add(jotaro_standing)
-        jotaro_standing.rect.x = jotaro_x
 
     elif keys[pygame.K_j]:
         for el in dio_group:
@@ -712,15 +706,9 @@ while running:
             joseph_hit_m.play()
         if jotaro_mediumhert.cur_frame == 3 or jotaro_mediumhert_r.cur_frame == 3:
             jotaro_hit = False
-            jotaro_cur_sprite = jotaro_standing
-            jotaro_group.add(jotaro_standing)
-            jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_mediumhert.cur_frame == 3 or jotaro_mediumhert_r.cur_frame == 3:
         jotaro_hit = False
-        jotaro_cur_sprite = jotaro_standing
-        jotaro_group.add(jotaro_standing)
-        jotaro_standing.rect.x = jotaro_x
 
     elif keys[pygame.K_h]:
         for el in dio_group:
@@ -758,15 +746,9 @@ while running:
             joseph_hit_m.play()
         if jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert_r.cur_frame == 15:
             jotaro_hit = False
-            jotaro_cur_sprite = jotaro_standing
-            jotaro_group.add(jotaro_standing)
-            jotaro_standing.rect.x = jotaro_x
 
     elif jotaro_heavyhert.cur_frame == 15 or jotaro_heavyhert_r.cur_frame == 15:
         jotaro_hit = False
-        jotaro_cur_sprite = jotaro_standing
-        jotaro_group.add(jotaro_standing)
-        jotaro_standing.rect.x = jotaro_x
 
     elif dio_hit is False:
         for el in dio_group:
