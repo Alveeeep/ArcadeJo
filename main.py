@@ -148,6 +148,12 @@ def show_go_screen():
 
 dio_win = pygame.sprite.Group()
 jojo_win = pygame.sprite.Group()
+draw_group = pygame.sprite.Group()
+draw = Background(load_image("draw.png"))
+draw.rect.x = 211
+draw.rect.y = 8
+walls_group.remove(draw)
+draw.add(draw_group)
 background = Background(load_image("background.png"))
 dio_wins = Background(load_image("dio_wins.png"))
 dio_wins.rect.x = 211
@@ -186,6 +192,7 @@ def drawing(hp, x):
     pygame.draw.rect(screen, (236, 151, 255), (x, 101, hp, 7), 0)
 
 
+text_x = 420
 running = True
 game_over = True
 while running:
@@ -295,6 +302,7 @@ while running:
         dio_hp = 340
         jotaro_hp = 340
         old_hp = 340
+        text_x = 420
         jotaro_rounds = 0
         dio_rounds = 0
         jotaro_cur_sprite = jotaro_standing
@@ -303,12 +311,13 @@ while running:
         counter, text = 90, '90'.rjust(3)
         font = pygame.font.SysFont('Consolas', 35)
         pygame.mixer.music.set_volume(0.05)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1)
 
     seconds = (pygame.time.get_ticks() - start_ticks) / 1000
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            pygame.quit()
     screen.fill(pygame.Color('white'))
     walls_group.draw(screen)
     dio_group.draw(screen)
@@ -320,8 +329,77 @@ while running:
     drawing_rounds(122, dio_rounds, 1)
     drawing_rounds(732, jotaro_rounds, 2)
     counter = 90 - int(seconds)
-    text = str(counter).rjust(3) if counter > 0 else 'boom!'
-    screen.blit(font.render(text, True, (0, 0, 255)), (420, 90))
+    if counter > 0:
+        if counter < 10:
+            text_x = 410
+        text = str(counter).rjust(3)
+    elif jotaro_hp > dio_hp:
+        jotaro_rounds += 1
+        jojo_win.draw(screen)
+        pygame.display.flip()
+        time.sleep(2)
+        jotaro_look = 2
+        dio_look = 1
+        dio_hit = False
+        jotaro_hit = False
+        text_x = 420
+        dio_hp = 340
+        jotaro_hp = 340
+        old_hp = 340
+        jotaro_x = 500
+        dio_x = 100
+        jotaro_standing.rect.x = jotaro_x
+        dio_standing.rect.x = dio_x
+        jotaro_cur_sprite = jotaro_standing
+        dio_cur_sprite = dio_standing
+        start_ticks = pygame.time.get_ticks()
+        counter, text = 90, '90'.rjust(3)
+        font = pygame.font.SysFont('Consolas', 35)
+    elif dio_hp > jotaro_hp:
+        dio_rounds += 1
+        dio_win.draw(screen)
+        pygame.display.flip()
+        time.sleep(2)
+        jotaro_look = 2
+        dio_look = 1
+        dio_hit = False
+        jotaro_hit = False
+        text_x = 420
+        dio_hp = 340
+        jotaro_hp = 340
+        old_hp = 340
+        jotaro_x = 500
+        dio_x = 100
+        jotaro_standing.rect.x = jotaro_x
+        dio_standing.rect.x = dio_x
+        jotaro_cur_sprite = jotaro_standing
+        dio_cur_sprite = dio_standing
+        start_ticks = pygame.time.get_ticks()
+        counter, text = 90, '90'.rjust(3)
+        font = pygame.font.SysFont('Consolas', 35)
+    elif dio_hp == jotaro_hp:
+        draw_group.draw(screen)
+        pygame.display.flip()
+        time.sleep(2)
+        jotaro_look = 2
+        dio_look = 1
+        dio_hit = False
+        jotaro_hit = False
+        text_x = 420
+        dio_hp = 340
+        jotaro_hp = 340
+        old_hp = 340
+        jotaro_x = 500
+        dio_x = 100
+        jotaro_standing.rect.x = jotaro_x
+        dio_standing.rect.x = dio_x
+        jotaro_cur_sprite = jotaro_standing
+        dio_cur_sprite = dio_standing
+        start_ticks = pygame.time.get_ticks()
+        counter, text = 90, '90'.rjust(3)
+        font = pygame.font.SysFont('Consolas', 35)
+
+    screen.blit(font.render(text, True, (0, 0, 255)), (text_x, 90))
     pygame.display.flip()
     pygame.display.flip()
     keys = pygame.key.get_pressed()
@@ -329,24 +407,34 @@ while running:
     if keys[pygame.K_LEFT] and jotaro_hit is False:
         for el in jotaro_group:
             el.remove(jotaro_group)
-        jotaro_group.add(jotaro_walking)
-        jotaro_cur_sprite = jotaro_walking
-        jotaro_walking.rect.x = jotaro_x
-        jotaro_walking.rect.x -= 10
-        jotaro_x = jotaro_walking.rect.x
-        jotaro_look = 2
-        jotaro_hit = False
+        if jotaro_x <= -110:
+            jotaro_group.add(jotaro_standing)
+            jotaro_cur_sprite = jotaro_standing
+            jotaro_standing.rect.x = jotaro_x
+            jotaro_look = 2
+        else:
+            jotaro_group.add(jotaro_walking)
+            jotaro_cur_sprite = jotaro_walking
+            jotaro_walking.rect.x = jotaro_x
+            jotaro_walking.rect.x -= 10
+            jotaro_x = jotaro_walking.rect.x
+            jotaro_look = 2
 
     elif keys[pygame.K_RIGHT] and jotaro_hit is False:
         for el in jotaro_group:
             el.remove(jotaro_group)
-        jotaro_group.add(jotaro_walking_r)
-        jotaro_cur_sprite = jotaro_walking_r
-        jotaro_walking_r.rect.x = jotaro_x
-        jotaro_walking_r.rect.x += 10
-        jotaro_x = jotaro_walking_r.rect.x
-        jotaro_look = 1
-        jotaro_hit = False
+        if jotaro_x >= 656:
+            jotaro_group.add(jotaro_standing_r)
+            jotaro_cur_sprite = jotaro_standing_r
+            jotaro_standing_r.rect.x = jotaro_x
+            jotaro_look = 1
+        else:
+            jotaro_group.add(jotaro_walking_r)
+            jotaro_cur_sprite = jotaro_walking_r
+            jotaro_walking_r.rect.x = jotaro_x
+            jotaro_walking_r.rect.x += 10
+            jotaro_x = jotaro_walking_r.rect.x
+            jotaro_look = 1
 
     elif keys[pygame.K_KP_3]:
         for el in jotaro_group:
@@ -513,22 +601,34 @@ while running:
     if keys[pygame.K_a] and dio_hit is False:
         for el in dio_group:
             el.remove(dio_group)
-        dio_group.add(dio_walking_r)
-        dio_cur_sprite = dio_walking_r
-        dio_walking_r.rect.x = dio_x
-        dio_walking_r.rect.x -= 10
-        dio_x = dio_walking_r.rect.x
-        dio_look = 2
+        if dio_x <= 0:
+            dio_group.add(dio_standing_r)
+            dio_cur_sprite = dio_standing_r
+            dio_standing_r.rect.x = dio_x
+            dio_look = 2
+        else:
+            dio_group.add(dio_walking_r)
+            dio_cur_sprite = dio_walking_r
+            dio_walking_r.rect.x = dio_x
+            dio_walking_r.rect.x -= 10
+            dio_x = dio_walking_r.rect.x
+            dio_look = 2
 
     elif keys[pygame.K_d] and dio_hit is False:
         for el in dio_group:
             el.remove(dio_group)
-        dio_group.add(dio_walking)
-        dio_cur_sprite = dio_walking
-        dio_walking.rect.x = dio_x
-        dio_walking.rect.x += 10
-        dio_x = dio_walking.rect.x
-        dio_look = 1
+        if dio_x >= 770:
+            dio_group.add(dio_standing)
+            dio_cur_sprite = dio_standing
+            dio_standing.rect.x = dio_x
+            dio_look = 1
+        else:
+            dio_group.add(dio_walking)
+            dio_cur_sprite = dio_walking
+            dio_walking.rect.x = dio_x
+            dio_walking.rect.x += 10
+            dio_x = dio_walking.rect.x
+            dio_look = 1
 
     elif keys[pygame.K_k]:
         for el in dio_group:
@@ -716,6 +816,7 @@ while running:
             old_hp = 340
             jotaro_x = 500
             dio_x = 100
+            text_x = 420
             jotaro_standing.rect.x = jotaro_x
             dio_standing.rect.x = dio_x
             jotaro_cur_sprite = jotaro_standing
@@ -743,6 +844,7 @@ while running:
             old_hp = 340
             jotaro_x = 500
             dio_x = 100
+            text_x = 420
             jotaro_standing.rect.x = jotaro_x
             dio_standing.rect.x = dio_x
             jotaro_cur_sprite = jotaro_standing
